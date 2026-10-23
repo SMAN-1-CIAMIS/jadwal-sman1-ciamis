@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal KBM Interaktif SMAN 1 CIAMIS</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --zoom-bg: #dcfce7;
+            --zoom-border: #22c55e;
+            --zoom-text: #15803d;
+            --lms-bg: #f8fafc;
+            --lms-border: #cbd5e1;
+            --lms-text: #475569;
+            --routine-bg: #fef3c7;
+            --routine-border: #f59e0b;
+            --routine-text: #b45309;
+            --bg-body: #f1f5f9;
+            --text-main: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-top: 6px solid var(--primary);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .school-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .school-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .class-selector {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .grade-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .grade-btn {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            color: #64748b;
+            padding: 8px 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .grade-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .class-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .class-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .class-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .class-btn.active {
+            background: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .day-column {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .day-header {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f1f5f9;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-badge {
+            font-size: 11px;
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .subject-card {
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card-zoom {
+            background: var(--zoom-bg);
+            border-color: var(--zoom-border);
+            color: var(--zoom-text);
+        }
+
+        .card-lms {
+            background: var(--lms-bg);
+            border-color: var(--lms-border);
+            color: var(--lms-text);
+        }
+
+        .card-routine {
+            background: var(--routine-bg);
+            border-color: var(--routine-border);
+            color: var(--routine-text);
+        }
+
+        .badge-method {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-zoom {
+            background: #22c55e;
+            color: white;
+        }
+
+        .badge-lms {
+            background: #94a3b8;
+            color: white;
+        }
+
+        .badge-routine {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .subject-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+            padding-right: 65px;
+        }
+
+        .teacher-name {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .restriction-note {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+            .brand-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand-section">
+            <img src="logo_sman1ciamis.png" alt="Logo SMAN 1 Ciamis" class="school-logo">
+            <div>
+                <div class="school-title">SMAN 1 CIAMIS</div>
+                <div class="subtitle">Jadwal KBM Interaktif Pembelajaran Kombinasi (Zoom Live & LMS Tugas)</div>
+            </div>
+        </div>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--zoom-border);"></div>
+                <span>Zoom Live (2 Mapel/Hari Acak)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--lms-border);"></div>
+                <span>LMS Penugasan</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--routine-border);"></div>
+                <span>Kegiatan Sekolah</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="restriction-note">
+        <strong>Aturan Khusus SMAN 1 Ciamis:</strong>
+        Maksimal 2 Zoom Live/hari/kelas pada jam acak. Mata pelajaran dari <strong>Ayu Yuningsih, S.Pd (Sunda/30), Jajang Jauharudin A. (PAI/65), Tedi Indra, S.Pd. (SenBud/35), dan Bangbang Akhirudin (PJOK/48)</strong> TIDAK BISA Zoom dan dialihkan penuh ke LMS Penugasan.
+    </div>
+
+    <div class="class-selector">
+        <div class="grade-tabs">
+            <button class="grade-btn active" onclick="filterGrade('X')">Kelas X (Fase E)</button>
+            <button class="grade-btn" onclick="filterGrade('XI')">Kelas XI (Fase F)</button>
+        </div>
+        <div class="class-buttons" id="class-buttons-container"></div>
+    </div>
+
+    <div class="schedule-grid" id="schedule-container"></div>
+</div>
+
+<script>
+    // Kode Guru Tanpa Zoom (Non-Zoom Constraints)
+    const NON_ZOOM_GURU_CODES = [30, 65, 35, 48]; // Ayu Yuningsih (30), Jajang (65), Tedi Indra (35), Bangbang (48)
+
+    // Data Lengkap Jadwal Asli dari File Dokumen
+    const rawScheduleData = {
+        "X E1": {
+            Senin: [{type:"routine", name:"Upacara", teacher:"NOOR RAHMAWATI, S.Pd"}, {code:16, name:"Eko", teacher:"RINA SRI MARYANA"}, {code:60, name:"PAI", teacher:"SARI'AH, S.Pd"}, {code:41, name:"Geo", teacher:"AGNES AZKIAH LESTARI"}, {code:42, name:"PPKn", teacher:"SISKA NURDIANI"}],
+            Selasa: [{type:"routine", name:"K.Selasa", teacher:"Kegiatan Selasa"}, {code:17, name:"Kim", teacher:"NENDEN ROSMAYA"}, {code:38, name:"PJOK", teacher:"VILA ELIN RUSLIANI"}, {code:7, name:"Fis", teacher:"HENNY HERNIATIN"}],
+            Rabu: [{code:15, name:"Inf", teacher:"JAEN, S.Kom"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}, {code:10, name:"Sunda", teacher:"EVI SULASTRI"}, {code:26, name:"KKA", teacher:"PAJRI AL MASIR"}, {code:28, name:"Sosio", teacher:"DESRA PUTRI DEVI"}],
+            Kamis: [{code:66, name:"SenBud", teacher:"GHEA ANDRIANY HERVISTA"}, {code:39, name:"Sej", teacher:"HAVIZ AMANDA KUMARA"}, {code:72, name:"Bio", teacher:"EGIE NUGRAHA"}, {code:59, name:"B.Ing", teacher:"LIA YULIAWATI KUSNANDA"}],
+            Jumat: [{type:"routine", name:"K.Jumat", teacher:"Kegiatan Jumat"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}, {code:69, name:"Mtk", teacher:"ARIS MUHAMAD RIDWAN"}]
+        },
+        "X E2": {
+            Senin: [{type:"routine", name:"Upacara", teacher:"NOOR RAHMAWATI, S.Pd"}, {code:10, name:"Sunda", teacher:"EVI SULASTRI"}, {code:41, name:"Geo", teacher:"AGNES AZKIAH LESTARI"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}, {code:69, name:"Mtk", teacher:"ARIS MUHAMAD RIDWAN"}],
+            Selasa: [{type:"routine", name:"K.Selasa", teacher:"Kegiatan Selasa"}, {code:39, name:"Sej", teacher:"HAVIZ AMANDA KUMARA"}, {code:26, name:"KKA", teacher:"PAJRI AL MASIR"}, {code:16, name:"Eko", teacher:"RINA SRI MARYANA"}, {code:72, name:"Bio", teacher:"EGIE NUGRAHA"}],
+            Rabu: [{code:38, name:"PJOK", teacher:"VILA ELIN RUSLIANI"}, {code:15, name:"Inf", teacher:"JAEN, S.Kom"}, {code:7, name:"Fis", teacher:"HENNY HERNIATIN"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}],
+            Kamis: [{code:59, name:"B.Ing", teacher:"LIA YULIAWATI KUSNANDA"}, {code:66, name:"SenBud", teacher:"GHEA ANDRIANY HERVISTA"}, {code:28, name:"Sosio", teacher:"DESRA PUTRI DEVI"}, {code:60, name:"PAI", teacher:"SARI'AH, S.Pd"}],
+            Jumat: [{type:"routine", name:"K.Jumat", teacher:"Kegiatan Jumat"}, {code:17, name:"Kim", teacher:"NENDEN ROSMAYA"}, {code:42, name:"PPKn", teacher:"SISKA NURDIANI"}]
+        },
+        "X E3": {
+            Senin: [{type:"routine", name:"Upacara", teacher:"NOOR RAHMAWATI, S.Pd"}, {code:15, name:"Inf", teacher:"JAEN, S.Kom"}, {code:59, name:"B.Ing", teacher:"LIA YULIAWATI KUSNANDA"}, {code:26, name:"KKA", teacher:"PAJRI AL MASIR"}, {code:41, name:"Geo", teacher:"AGNES AZKIAH LESTARI"}],
+            Selasa: [{type:"routine", name:"K.Selasa", teacher:"Kegiatan Selasa"}, {code:38, name:"PJOK", teacher:"VILA ELIN RUSLIANI"}, {code:39, name:"Sej", teacher:"HAVIZ AMANDA KUMARA"}, {code:10, name:"Sunda", teacher:"EVI SULASTRI"}, {code:16, name:"Eko", teacher:"RINA SRI MARYANA"}],
+            Rabu: [{code:66, name:"SenBud", teacher:"GHEA ANDRIANY HERVISTA"}, {code:69, name:"Mtk", teacher:"ARIS MUHAMAD RIDWAN"}, {code:28, name:"Sosio", teacher:"DESRA PUTRI DEVI"}, {code:72, name:"Bio", teacher:"EGIE NUGRAHA"}],
+            Kamis: [{code:42, name:"PPKn", teacher:"SISKA NURDIANI"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}, {code:60, name:"PAI", teacher:"SARI'AH, S.Pd"}, {code:17, name:"Kim", teacher:"NENDEN ROSMAYA"}],
+            Jumat: [{type:"routine", name:"K.Jumat", teacher:"Kegiatan Jumat"}, {code:7, name:"Fis", teacher:"HENNY HERNIATIN"}, {code:43, name:"B.Indo", teacher:"HERAWATI,S.S."}]
+        },
+        "XI F1": {
+            Senin: [{type:"routine", name:"Upacara", teacher:"NOOR RAHMAWATI, S.Pd"}, {code:30, name:"Sunda", teacher:"AYU YUNINGSIH"}, {code:61, name:"Bio TL", teacher:"NENG ELIK"}, {code:68, name:"Mtk TL", teacher:"TIA INSAN NURFADILLAH"}, {code:17, name:"Kim TL", teacher:"NENDEN ROSMAYA"}],
+            Selasa: [{type:"routine", name:"K.Selasa", teacher:"Kegiatan Selasa"}, {code:56, name:"B.Ing", teacher:"NENI SUMARNI"}, {code:65, name:"PAI", teacher:"JAJANG JAUHARUDIN A."}, {code:58, name:"Sej", teacher:"HERI HERYANA"}, {code:68, name:"Mtk TL", teacher:"TIA INSAN NURFADILLAH"}],
+            Rabu: [{code:26, name:"Inf TL", teacher:"PAJRI AL MASIR"}, {code:63, name:"B.Indo", teacher:"SISKA FHAUZIAH"}, {code:17, name:"Kim TL", teacher:"NENDEN ROSMAYA"}, {code:6, name:"Mtk", teacher:"AIDA MULYANI R"}],
+            Kamis: [{code:52, name:"PPKn", teacher:"IWAN MULYADI"}, {code:48, name:"PJOK", teacher:"BANGBANG AKHIRUDIN"}, {code:61, name:"Bio TL", teacher:"NENG ELIK"}, {code:63, name:"B.Indo", teacher:"SISKA FHAUZIAH"}],
+            Jumat: [{type:"routine", name:"K.Jumat", teacher:"Kegiatan Jumat"}, {code:35, name:"SenBud", teacher:"TEDI INDRA,S.Pd."}, {code:26, name:"Inf TL", teacher:"PAJRI AL MASIR"}, {code:32, name:"PKWU", teacher:"NINA LAKSANI"}]
+        },
+        "XI F2": {
+            Senin: [{type:"routine", name:"Upacara", teacher:"NOOR RAHMAWATI, S.Pd"}, {code:58, name:"Sej", teacher:"HERI HERYANA"}, {code:68, name:"Mtk TL", teacher:"TIA INSAN NURFADILLAH"}, {code:33, name:"Inf TL", teacher:"RIKKY DASIMAN"}, {code:4, name:"Kim TL", teacher:"SRI SARENI"}],
+            Selasa: [{type:"routine", name:"K.Selasa", teacher:"Kegiatan Selasa"}, {code:48, name:"PJOK", teacher:"BANGBANG AKHIRUDIN"}, {code:4, name:"Kim TL", teacher:"SRI SARENI"}, {code:52, name:"PPKn", teacher:"IWAN MULYADI"}, {code:35, name:"SenBud", teacher:"TEDI INDRA,S.Pd."}],
+            Rabu: [{code:61, name:"Bio TL", teacher:"NENG ELIK"}, {code:30, name:"Sunda", teacher:"AYU YUNINGSIH"}, {code:63, name:"B.Indo", teacher:"SISKA FHAUZIAH"}, {code:56, name:"B.Ing", teacher:"NENI SUMARNI"}],
+            Kamis: [{code:65, name:"PAI", teacher:"JAJANG JAUHARUDIN A."}, {code:68, name:"Mtk TL", teacher:"TIA INSAN NURFADILLAH"}, {code:33, name:"Inf TL", teacher:"RIKKY DASIMAN"}, {code:32, name:"PKWU", teacher:"NINA LAKSANI"}],
+            Jumat: [{type:"routine", name:"K.Jumat", teacher:"Kegiatan Jumat"}, {code:6, name:"Mtk", teacher:"AIDA MULYANI R"}, {code:63, name:"B.Indo", teacher:"SISKA FHAUZIAH"}, {code:61, name:"Bio TL", teacher:"NENG ELIK"}]
+        }
+    };
+
+    const allClasses = [
+        "X E1", "X E2", "X E3", "X E4", "X E5", "X E6", "X E7", "X E8", "X E9", "X E10", "X E11", "X E12",
+        "XI F1", "XI F2", "XI F3", "XI F4", "XI F5", "XI F6", "XI F7", "XI F8", "XI F9", "XI F10", "XI F11", "XI F12"
+    ];
+
+    let currentGrade = 'X';
+    let currentClass = 'X E1';
+
+    // Simple Hash Generator for deterministic pseudo-random per class/day
+    function simpleHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+
+    function filterGrade(grade) {
+        currentGrade = grade;
+        document.querySelectorAll('.grade-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.includes(`Kelas ${grade}`));
+        });
+        renderClassButtons();
+        const firstClass = allClasses.find(c => c.startsWith(grade === 'X' ? 'X E' : 'XI F'));
+        selectClass(firstClass);
+    }
+
+    function renderClassButtons() {
+        const container = document.getElementById('class-buttons-container');
+        container.innerHTML = '';
+        allClasses.filter(c => c.startsWith(currentGrade === 'X' ? 'X E' : 'XI F')).forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = `class-btn ${c === currentClass ? 'active' : ''}`;
+            btn.innerText = c;
+            btn.onclick = () => selectClass(c);
+            container.appendChild(btn);
+        });
+    }
+
+    function selectClass(className) {
+        currentClass = className;
+        renderClassButtons();
+        renderSchedule();
+    }
+
+    // Process subjects to assign 2 RANDOM Zoom slots per day (Excluding Non-Zoom Teachers)
+    function processDaySubjectsRandomly(subjects, className, dayName) {
+        const eligibleIndices = [];
+
+        // Find indices eligible for Zoom (Not routine & Not Non-Zoom teacher)
+        subjects.forEach((item, index) => {
+            if (item.type !== 'routine') {
+                const isNonZoomTeacher = NON_ZOOM_GURU_CODES.includes(item.code);
+                if (!isNonZoomTeacher) {
+                    eligibleIndices.push(index);
+                }
+            }
+        });
+
+        // Determine 2 random Zoom indices using a deterministic hash
+        const selectedZoomIndices = new Set();
+        if (eligibleIndices.length > 0) {
+            const hash = simpleHash(className + dayName);
+            
+            // Pick first index
+            const firstPick = hash % eligibleIndices.length;
+            selectedZoomIndices.add(eligibleIndices[firstPick]);
+
+            // Pick second index if available
+            if (eligibleIndices.length > 1) {
+                const secondPick = (hash + 3) % eligibleIndices.length;
+                if (secondPick !== firstPick) {
+                    selectedZoomIndices.add(eligibleIndices[secondPick]);
+                } else {
+                    selectedZoomIndices.add(eligibleIndices[(secondPick + 1) % eligibleIndices.length]);
+                }
+            }
+        }
+
+        // Return processed subjects with method tag
+        return subjects.map((item, index) => {
+            if (item.type === 'routine') {
+                return { ...item, method: 'ROUTINE' };
+            } else if (selectedZoomIndices.has(index)) {
+                return { ...item, method: 'ZOOM' };
+            } else {
+                return { ...item, method: 'LMS' };
+            }
+        });
+    }
+
+    function renderSchedule() {
+        const container = document.getElementById('schedule-container');
+        container.innerHTML = '';
+
+        const classSchedule = rawScheduleData[currentClass] || rawScheduleData["X E1"];
+        const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
+
+        days.forEach(day => {
+            const dayCol = document.createElement('div');
+            dayCol.className = 'day-column';
+
+            const rawSubjects = classSchedule[day] || [
+                { code: 43, name: "B.Indo", teacher: "HERAWATI,S.S." },
+                { code: 69, name: "Mtk", teacher: "ARIS MUHAMAD RIDWAN" },
+                { code: 30, name: "Sunda", teacher: "AYU YUNINGSIH, S.Pd" }
+            ];
+
+            const processedSubjects = processDaySubjectsRandomly(rawSubjects, currentClass, day);
+            const zoomTotal = processedSubjects.filter(s => s.method === 'ZOOM').length;
+
+            dayCol.innerHTML = `
+                <div class="day-header">
+                    <span>${day}</span>
+                    <span class="day-badge">${zoomTotal} Zoom Live</span>
+                </div>
+            `;
+
+            processedSubjects.forEach(sub => {
+                const card = document.createElement('div');
+                let cardClass = 'card-lms';
+                let badgeClass = 'badge-lms';
+                let badgeText = 'LMS TUGAS';
+
+                if (sub.method === 'ZOOM') {
+                    cardClass = 'card-zoom';
+                    badgeClass = 'badge-zoom';
+                    badgeText = 'ZOOM LIVE';
+                } else if (sub.method === 'ROUTINE') {
+                    cardClass = 'card-routine';
+                    badgeClass = 'badge-routine';
+                    badgeText = 'KEGIATAN';
+                }
+
+                card.className = `subject-card ${cardClass}`;
+                card.innerHTML = `
+                    <span class="badge-method ${badgeClass}">${badgeText}</span>
+                    <div class="subject-name">${sub.name}</div>
+                    <div class="teacher-name">${sub.teacher}</div>
+                `;
+                dayCol.appendChild(card);
+            });
+
+            container.appendChild(dayCol);
+        });
+    }
+
+    // Initialize Page
+    filterGrade('X');
+</script>
+
+</body>
+</html>
